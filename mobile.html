@@ -14,66 +14,107 @@
   *,*::before,*::after{box-sizing:border-box}
   :root{
     --accent:#ff5722;
+    --accent-2:#ffe5dc;
     --danger:#d32f2f;
+    --success:#2f8a3e;
     --line:#e0e0e0;
     --soft:#f5f5f0;
     --muted:#666;
     --bg:#fafaf7;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --shadow-md:0 4px 12px rgba(0,0,0,.10);
+    --shadow-lg:0 8px 30px rgba(0,0,0,.18);
+    --radius:6px;
+    --radius-sm:4px;
   }
-  html,body{margin:0;padding:0;background:var(--bg);color:#222;font-family:'Noto Kufi Arabic',sans-serif;font-size:16px;-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0;background:var(--bg);color:#222;font-family:'Noto Kufi Arabic',sans-serif;font-size:16px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
   html[lang="en"] body{font-family:'Inter',sans-serif}
-  body{padding-bottom:90px;min-height:100vh}
+  body{padding-bottom:100px;min-height:100vh;overscroll-behavior-y:contain}
+
+  button{transition:transform .08s ease, background .15s, color .15s, border-color .15s, opacity .15s}
+  button:active{transform:scale(.96)}
+  button:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
   /* --- Top bar --- */
-  .topbar{position:sticky;top:0;z-index:50;background:#000;color:#fff;display:flex;align-items:center;gap:8px;padding:10px 12px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .topbar{position:sticky;top:0;z-index:50;background:#000;color:#fff;display:flex;flex-direction:column;gap:6px;padding:8px 12px 6px;box-shadow:var(--shadow-md)}
+  .topbar-row{display:flex;align-items:center;gap:8px}
   .topbar h1{flex:1;margin:0;font-size:14px;font-weight:700;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
   html[lang="ar"] .topbar h1{font-family:'Noto Kufi Arabic',sans-serif;font-size:15px}
-  .topbar button{background:#fff;color:#000;border:1.5px solid #fff;padding:7px 12px;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
+  .topbar button{background:#fff;color:#000;border:1.5px solid #fff;padding:7px 12px;border-radius:var(--radius-sm);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;min-height:36px}
   .topbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
   .topbar button.danger{background:transparent;color:#fff;border-color:#fff}
-  .topbar .save-hint{font-size:10px;opacity:.7;font-family:'JetBrains Mono',monospace}
+  .topbar button.icon-only{padding:6px 9px;font-size:14px}
+  .topbar .save-hint{font-size:10px;opacity:.7;font-family:'JetBrains Mono',monospace;min-width:14px;text-align:center}
+  .topbar .save-hint.saved{color:#5af564;opacity:1}
+  .topbar .save-hint.error{color:#ff8b8b;opacity:1}
+
+  /* Storage quota bar */
+  .quota-row{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(255,255,255,.55)}
+  .quota-bar{flex:1;height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+  .quota-fill{height:100%;background:linear-gradient(90deg,#5af564,#ffd14a 70%,#ff5722 95%);width:0%;transition:width .3s ease}
+  .quota-row.warn{color:#ffd14a}
+  .quota-row.crit{color:#ff8b8b}
 
   main{padding:14px}
 
   /* --- Section card --- */
-  .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px;margin:0 0 14px}
-  .card > h2{margin:0 0 12px;font-size:15px;font-weight:700;color:#000;letter-spacing:.05em;border-bottom:2px solid var(--accent);padding-bottom:6px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:0 0 14px;box-shadow:var(--shadow-sm)}
+  .card > h2{margin:0 0 12px;font-size:15px;font-weight:700;color:#000;letter-spacing:.05em;border-bottom:2px solid var(--accent);padding-bottom:6px;display:flex;align-items:center;gap:8px}
+  .card > h2 .count-badge{background:var(--accent-2);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
 
   /* --- Inputs --- */
   input[type=text], textarea, input[type=number]{
-    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:4px;
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
     font:inherit;font-size:15px;background:#fff;color:#222;
+    transition:border-color .15s, box-shadow .15s;
   }
-  input[type=text]:focus, textarea:focus, input[type=number]:focus{outline:none;border-color:var(--accent)}
+  input[type=text]:focus, textarea:focus, input[type=number]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-2)}
+  input.invalid, textarea.invalid{border-color:var(--danger);background:#fff5f5}
   textarea{resize:vertical;min-height:60px}
   label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin:0 0 4px;letter-spacing:.05em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
   html[lang="ar"] label{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0;font-size:12px;text-transform:none}
   .field{margin:0 0 10px}
 
-  select{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:4px;font:inherit;background:#fff}
+  select{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font:inherit;background:#fff;min-height:38px}
 
-  /* --- Add/Remove buttons --- */
-  .btn{padding:10px 14px;border-radius:4px;border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;font-family:inherit;font-size:13px}
+  /* --- Buttons --- */
+  .btn{padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;min-height:40px}
   .btn:hover{background:var(--accent);color:#fff}
   .btn.full{width:100%;padding:12px}
   .btn.dashed{border-style:dashed}
-  .btn-del{background:#fff;border:1.5px solid var(--danger);color:var(--danger);width:32px;height:32px;border-radius:4px;font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
+  .btn.ghost{background:transparent;border:none;color:var(--muted);padding:6px 8px;min-height:auto}
+  .btn.ghost:hover{color:#000;background:var(--soft)}
+  .btn-del{background:#fff;border:1.5px solid var(--danger);color:var(--danger);width:36px;height:36px;border-radius:var(--radius-sm);font-weight:700;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
   .btn-del:hover{background:var(--danger);color:#fff}
+  .btn-icon{background:#fff;border:1.5px solid var(--line);color:#222;width:36px;height:36px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
+  .btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-icon:disabled:hover{border-color:var(--line);color:#222}
 
   /* --- Utensil row --- */
-  .u-row{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--soft);border-radius:4px;margin:0 0 8px}
+  .u-row{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--soft);border-radius:var(--radius-sm);margin:0 0 8px}
   .u-row .u-fields{flex:1;min-width:0}
-  .u-row .u-img-wrap{position:relative;flex-shrink:0;width:64px;height:64px;border:1.5px dashed var(--line);background:#fff;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;cursor:pointer}
+  .u-row .u-img-wrap{position:relative;flex-shrink:0;width:64px;height:64px;border:1.5px dashed var(--line);background:#fff;border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;cursor:pointer}
   .u-row .u-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
   .u-row .u-img-wrap input{position:absolute;inset:0;opacity:0;cursor:pointer}
   .u-row .u-img-wrap .u-img-clear{position:absolute;top:2px;inset-inline-end:2px;width:20px;height:20px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2}
   .u-row .u-img-wrap.has-img .u-img-clear{display:flex}
 
   /* --- Step --- */
-  .step{background:#fff;border:1.5px solid var(--line);border-radius:6px;margin:0 0 12px;overflow:hidden}
-  .step-head{display:flex;align-items:center;gap:8px;background:var(--soft);padding:10px 12px;border-bottom:1px solid var(--line)}
-  .step-head .step-n{flex-shrink:0;background:#000;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 8px;border-radius:3px}
-  .step-head .step-title{flex:1;font-weight:700;font-size:13px;color:var(--muted)}
+  .step{background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);margin:0 0 12px;overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow .2s, border-color .2s}
+  .step.collapsed .step-body{display:none}
+  .step.dragging{opacity:.55;border-color:var(--accent);box-shadow:var(--shadow-md)}
+  .step.drag-over{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-2)}
+  .step-head{display:flex;align-items:center;gap:6px;background:var(--soft);padding:10px 10px;border-bottom:1px solid var(--line);user-select:none}
+  .step.collapsed .step-head{border-bottom:0}
+  .step-head .grab{width:28px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:grab;font-size:14px;flex-shrink:0;touch-action:none}
+  .step-head .grab:active{cursor:grabbing;color:var(--accent)}
+  .step-head .step-n{flex-shrink:0;background:#000;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:5px 9px;border-radius:3px;min-width:30px;text-align:center}
+  .step-head .step-title{flex:1;font-weight:700;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;padding:4px 2px}
+  .step-head .step-title-text{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+  .step-head .step-title .photo-count{display:inline-block;background:var(--accent);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-inline-start:6px;font-family:'JetBrains Mono',monospace;font-weight:700;vertical-align:middle}
+  .step-head .step-collapse{font-size:12px;color:var(--muted);transition:transform .2s}
+  .step.collapsed .step-collapse{transform:rotate(-90deg)}
+  html[dir="rtl"] .step.collapsed .step-collapse{transform:rotate(90deg)}
   .step-body{padding:12px}
 
   /* --- Items --- */
@@ -83,42 +124,51 @@
   .item-row .item-fields input{font-size:14px;padding:9px 10px}
 
   /* --- Photos in step --- */
-  .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin:6px 0}
-  .photos .photo-wrap{position:relative;aspect-ratio:1;background:#eee;border-radius:4px;overflow:hidden}
+  .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:6px;margin:6px 0}
+  .photos .photo-wrap{position:relative;aspect-ratio:1;background:#eee;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer}
   .photos .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
-  .photos .photo-wrap .photo-del{position:absolute;top:3px;inset-inline-end:3px;width:22px;height:22px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-  .photos-add{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px dashed var(--accent);color:var(--accent);background:#fff;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;position:relative;overflow:hidden}
+  .photos .photo-wrap .photo-num{position:absolute;top:3px;inset-inline-start:3px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:1px 5px;border-radius:8px;pointer-events:none}
+  .photos .photo-wrap .photo-tools{position:absolute;bottom:0;inset-inline-start:0;inset-inline-end:0;display:flex;background:linear-gradient(to top,rgba(0,0,0,.75),transparent);padding:14px 4px 4px;gap:3px;justify-content:space-between;opacity:0;transition:opacity .15s}
+  .photos .photo-wrap:hover .photo-tools, .photos .photo-wrap:focus-within .photo-tools{opacity:1}
+  .photos .photo-wrap .photo-tools button{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.9);color:#000;border:none;font-size:11px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+  .photos .photo-wrap .photo-tools .photo-del{background:var(--danger);color:#fff}
+  .photos-add{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border:1.5px dashed var(--accent);color:var(--accent);background:#fff;border-radius:var(--radius-sm);font-weight:700;font-size:12px;cursor:pointer;position:relative;overflow:hidden;min-height:40px}
   .photos-add input{position:absolute;inset:0;opacity:0;cursor:pointer}
 
   /* --- Weights table --- */
-  .w-toggle{display:flex;align-items:center;justify-content:space-between;background:#000;color:#fff;padding:8px 12px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.1em;font-family:'JetBrains Mono',monospace;margin:8px 0}
+  .w-toggle{display:flex;align-items:center;justify-content:space-between;background:#000;color:#fff;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.1em;font-family:'JetBrains Mono',monospace;margin:8px 0;min-height:38px;user-select:none}
   html[lang="ar"] .w-toggle{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0;font-size:13px}
   .w-toggle .w-count{color:var(--accent)}
   .w-table{display:none}
   .w-table.open{display:block}
-  .w-row{background:var(--soft);border-radius:4px;padding:10px;margin:0 0 8px}
+  .w-row{background:var(--soft);border-radius:var(--radius-sm);padding:10px;margin:0 0 8px}
   .w-row .w-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .w-row .w-grid .full-row{grid-column:1/-1}
+
+  /* Step actions row */
+  .step-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
+  .step-actions .btn.ghost{font-size:11px;padding:5px 8px}
 
   /* --- Lang toggle --- */
   body.lang-en .ar-only{display:none}
   body.lang-ar .en-only{display:none}
 
-  /* --- Bottom action bar (sticky export) --- */
-  .bottombar{position:fixed;bottom:0;inset-inline-start:0;inset-inline-end:0;z-index:50;background:#fff;border-top:2px solid var(--accent);padding:10px 14px;display:flex;gap:8px;box-shadow:0 -4px 12px rgba(0,0,0,.08)}
-  .bottombar button{flex:1;padding:14px;border-radius:4px;font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:inherit}
+  /* --- Bottom action bar --- */
+  .bottombar{position:fixed;bottom:0;inset-inline-start:0;inset-inline-end:0;z-index:50;background:#fff;border-top:2px solid var(--accent);padding:10px 14px;display:flex;gap:8px;box-shadow:0 -4px 12px rgba(0,0,0,.10);padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .bottombar button{flex:1;padding:14px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:inherit;min-height:48px}
   .bottombar button.secondary{background:#fff;color:var(--accent)}
   .bottombar button:disabled{opacity:.5;cursor:not-allowed}
 
-  /* --- Status flash --- */
-  .flash{position:fixed;top:60px;inset-inline-start:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 16px;border-radius:4px;font-size:13px;font-weight:600;z-index:100;opacity:0;transition:opacity .2s;pointer-events:none}
-  html[dir="rtl"] .flash{transform:translateX(50%)}
-  .flash.show{opacity:1}
-  .flash.error{background:var(--danger)}
-  .flash.success{background:#2f8a3e}
+  /* --- Toast (replaces flash) --- */
+  .toast{position:fixed;bottom:90px;inset-inline-start:50%;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;padding:12px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;z-index:120;opacity:0;transition:all .25s;pointer-events:none;box-shadow:var(--shadow-lg);max-width:90vw;text-align:center}
+  html[dir="rtl"] .toast{transform:translateX(50%) translateY(20px)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  html[dir="rtl"] .toast.show{transform:translateX(50%) translateY(0)}
+  .toast.error{background:var(--danger)}
+  .toast.success{background:var(--success)}
 
   /* --- Drafts drawer --- */
-  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:none}
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;display:none;backdrop-filter:blur(2px)}
   .drawer-backdrop.open{display:block}
   .drawer{position:fixed;inset-inline-start:0;inset-inline-end:0;bottom:0;background:#fff;z-index:91;border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);max-height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease}
   .drawer.open{transform:translateY(0)}
@@ -132,26 +182,49 @@
   .draft-row .draft-title{font-weight:700;font-size:14px;color:#222;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .draft-row .draft-meta{font-size:11px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
   .draft-row .draft-actions{display:flex;gap:6px;flex-shrink:0}
-  .draft-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px}
+  .draft-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
 
-  .topbar .draft-pill{flex:1;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);padding:7px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;font-family:inherit;min-width:0}
+  .topbar .draft-pill{flex:1;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);padding:7px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;font-family:inherit;min-width:0;min-height:36px}
   .topbar .draft-pill .pill-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start}
   .topbar .draft-pill .pill-icon{font-size:10px;opacity:.7}
 
+  /* --- Lightbox --- */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:12px}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%;max-height:75vh;object-fit:contain;border-radius:var(--radius-sm);box-shadow:var(--shadow-lg)}
+  .lightbox-close{position:absolute;top:14px;inset-inline-end:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox-nav{display:flex;gap:14px;align-items:center;color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px}
+  .lightbox-nav button{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;border:none;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox-nav button:disabled{opacity:.3}
+
   /* --- Help --- */
-  .help{font-size:12px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:4px;padding:10px 12px;margin:0 0 14px;line-height:1.6}
+  .help{font-size:12px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:var(--radius-sm);padding:10px 12px;margin:0 0 14px;line-height:1.6}
+
+  /* --- Empty states --- */
+  .empty-state{padding:24px 14px;text-align:center;color:var(--muted);font-size:13px;background:var(--soft);border-radius:var(--radius-sm);margin:0 0 10px;border:1px dashed var(--line)}
+  .empty-state .emoji{font-size:28px;display:block;margin-bottom:6px;opacity:.6}
+
+  /* --- Reorder ghost (for drag preview) --- */
+  .drag-ghost{position:fixed;pointer-events:none;z-index:300;opacity:.8;transform:rotate(-1deg);box-shadow:var(--shadow-lg);max-width:90vw}
 </style>
 </head>
 <body class="lang-ar">
 
 <div class="topbar">
-  <button class="draft-pill" onclick="openDrawer()">
-    <span class="pill-icon">📂</span>
-    <span class="pill-title" id="active-title">—</span>
-    <span class="pill-icon">▾</span>
-  </button>
-  <span class="save-hint" id="save-hint">●</span>
-  <button onclick="toggleLang()" id="lang-btn">EN</button>
+  <div class="topbar-row">
+    <button class="draft-pill" onclick="openDrawer()" aria-label="Drafts">
+      <span class="pill-icon">📂</span>
+      <span class="pill-title" id="active-title">—</span>
+      <span class="pill-icon">▾</span>
+    </button>
+    <span class="save-hint" id="save-hint">●</span>
+    <button class="icon-only" onclick="toggleLang()" id="lang-btn" aria-label="Language">EN</button>
+  </div>
+  <div class="quota-row" id="quota-row" title="Local storage usage">
+    <span id="quota-label">—</span>
+    <div class="quota-bar"><div class="quota-fill" id="quota-fill"></div></div>
+    <span id="quota-pct">0%</span>
+  </div>
 </div>
 
 <!-- Drafts drawer -->
@@ -171,18 +244,29 @@
   <div class="drawer-list" id="drawer-list"></div>
 </div>
 
-<div id="flash" class="flash"></div>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="close">×</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-nav">
+    <button id="lb-prev" onclick="lightboxNav(-1)" aria-label="prev">‹</button>
+    <span id="lb-counter">1 / 1</span>
+    <button id="lb-next" onclick="lightboxNav(1)" aria-label="next">›</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <main>
 
   <div class="help">
     <span class="ar-only">
-      املأ تفاصيل الوصفة، صور الخطوات، ثم اضغط <b>تصدير</b>. الملف ينزل JSON واحد، أرسله للكمبيوتر وأستورده هناك.
-      <br>الصفحة تحفظ تلقائيًا — تقدر تقفل وترجع.
+      املأ الوصفة، صور الخطوات، ثم اضغط <b>تصدير</b>. الصور تتضغط تلقائيًا قبل الحفظ.
+      <br>اسحب رأس الخطوة لإعادة الترتيب · اضغط على الصورة للتكبير · اضغط على رأس الخطوة للطي.
     </span>
     <span class="en-only">
-      Fill the recipe, take photos, then tap <b>Export</b>. A single JSON file downloads — send it to the PC for import.
-      <br>Drafts are auto-saved locally.
+      Fill the recipe, take photos, tap <b>Export</b>. Photos auto-compress before storage.
+      <br>Drag step header to reorder · tap photo to zoom · tap step header to collapse.
     </span>
   </div>
 
@@ -207,7 +291,10 @@
 
   <!-- Utensils -->
   <section class="card">
-    <h2><span class="ar-only">الأدوات</span><span class="en-only">Utensils</span></h2>
+    <h2>
+      <span class="ar-only">الأدوات</span><span class="en-only">Utensils</span>
+      <span class="count-badge" id="utensil-count">0</span>
+    </h2>
     <div id="utensils-list"></div>
     <button class="btn full dashed" onclick="addUtensil()">
       <span class="ar-only">+ إضافة أداة</span>
@@ -217,7 +304,10 @@
 
   <!-- Steps -->
   <section class="card">
-    <h2><span class="ar-only">الخطوات</span><span class="en-only">Steps</span></h2>
+    <h2>
+      <span class="ar-only">الخطوات</span><span class="en-only">Steps</span>
+      <span class="count-badge" id="step-count">0</span>
+    </h2>
     <div id="steps-list"></div>
     <button class="btn full dashed" onclick="addStep()">
       <span class="ar-only">+ إضافة خطوة</span>
@@ -229,8 +319,8 @@
 
 <div class="bottombar">
   <button class="secondary" onclick="copyExportJson()">
-    <span class="ar-only">📋 نسخ JSON</span>
-    <span class="en-only">📋 Copy JSON</span>
+    <span class="ar-only">📋 نسخ</span>
+    <span class="en-only">📋 Copy</span>
   </button>
   <button onclick="exportRecipe()">
     <span class="ar-only">⬇️ تصدير ملف</span>
@@ -245,9 +335,14 @@
 // Constants & data model
 // =========================================================================
 
-const LS_KEY_OLD = 'namliah-mobile-draft-v1';   // legacy single-draft (auto-migrated)
-const LS_KEY = 'namliah-mobile-drafts-v2';      // { activeId, drafts: { id: state } }
+const LS_KEY_OLD = 'namliah-mobile-draft-v1';
+const LS_KEY = 'namliah-mobile-drafts-v2';
 const LS_LANG = 'namliah-mobile-lang';
+
+// Image compression config — drops a 4MB phone photo to ~250KB without
+// losing recipe-photo detail and keeps localStorage usable for many drafts.
+const IMG_MAX_DIM = 1280;
+const IMG_QUALITY = 0.82;
 
 const UNITS = [
   { code: 'g',   ar: 'جم'  },
@@ -267,6 +362,7 @@ function newStep() {
     images: [],
     weights: [],
     showWeights: false,
+    collapsed: false,
   };
 }
 
@@ -304,23 +400,62 @@ function toggleLang() {
 }
 
 // =========================================================================
+// Image compression
+// =========================================================================
+
+function compressImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('read failed'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('decode failed'));
+      img.onload = () => {
+        try {
+          let { width, height } = img;
+          const max = Math.max(width, height);
+          if (max > IMG_MAX_DIM) {
+            const scale = IMG_MAX_DIM / max;
+            width = Math.round(width * scale);
+            height = Math.round(height * scale);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+          // Always re-encode to JPEG for smaller size; PNGs of phone photos waste space.
+          const dataUrl = canvas.toDataURL('image/jpeg', IMG_QUALITY);
+          resolve(dataUrl);
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// =========================================================================
 // Persist (localStorage)
 // =========================================================================
 
 let saveTimer = null;
 function onChange() {
-  // Pull all top-level inputs into state
   state.titleAr = document.getElementById('titleAr').value;
   state.titleEn = document.getElementById('titleEn').value;
   scheduleSave();
 }
 function scheduleSave() {
-  document.getElementById('save-hint').textContent = '●';
+  const hint = document.getElementById('save-hint');
+  hint.textContent = '●';
+  hint.classList.remove('saved','error');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(saveNow, 350);
 }
 function saveNow() {
-  // Pull latest title fields from inputs (in case caller didn't)
   const titleArEl = document.getElementById('titleAr');
   const titleEnEl = document.getElementById('titleEn');
   if (titleArEl) state.titleAr = titleArEl.value;
@@ -328,14 +463,20 @@ function saveNow() {
   state.updatedAt = new Date().toISOString();
   allDrafts.activeId = state.id;
   allDrafts.drafts[state.id] = state;
+  const hint = document.getElementById('save-hint');
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(allDrafts));
-    document.getElementById('save-hint').textContent = '✓';
+    hint.textContent = '✓';
+    hint.classList.add('saved');
+    hint.classList.remove('error');
   } catch (e) {
-    document.getElementById('save-hint').textContent = '!';
-    flash(getLang()==='ar' ? 'الذاكرة ممتلئة — صدّر الوصفة الآن' : 'Storage full — export now', 'error');
+    hint.textContent = '!';
+    hint.classList.add('error');
+    hint.classList.remove('saved');
+    toast(getLang()==='ar' ? 'الذاكرة ممتلئة — صدّر الوصفة الآن' : 'Storage full — export now', 'error');
   }
   updateActiveTitle();
+  updateQuotaBar();
 }
 
 function normalizeDraft(parsed) {
@@ -360,7 +501,6 @@ function normalizeDraft(parsed) {
 
 function loadAllDrafts() {
   try {
-    // Migrate legacy single-draft if present
     const legacyRaw = localStorage.getItem(LS_KEY_OLD);
     const newRaw = localStorage.getItem(LS_KEY);
     if (legacyRaw && !newRaw) {
@@ -381,7 +521,6 @@ function loadAllDrafts() {
     }
     let activeId = allDrafts.activeId;
     if (!allDrafts.drafts[activeId]){
-      // Pick the most recently updated, else create one
       const ids = Object.keys(allDrafts.drafts);
       if (!ids.length){
         const fresh = newDraft();
@@ -404,7 +543,6 @@ function loadAllDrafts() {
 
 function switchToDraft(id) {
   if (!allDrafts.drafts[id]) return;
-  // Save current first
   saveNow();
   state = allDrafts.drafts[id];
   allDrafts.activeId = id;
@@ -422,7 +560,7 @@ function createDraftAndSwitch() {
   saveNow();
   renderAll();
   closeDrawer();
-  flash(getLang() === 'ar' ? 'وصفة جديدة' : 'New draft');
+  toast(getLang() === 'ar' ? 'وصفة جديدة' : 'New draft');
 }
 
 function deleteDraft(id) {
@@ -448,17 +586,6 @@ function deleteDraft(id) {
   renderDrawer();
 }
 
-function resetDraft() {
-  if (!confirm(getLang() === 'ar' ? 'مسح هذه المسودة؟' : 'Clear this draft?')) return;
-  const id = state.id;
-  state = newDraft();
-  state.id = id;
-  allDrafts.drafts[id] = state;
-  saveNow();
-  renderAll();
-  flash(getLang() === 'ar' ? 'تم المسح' : 'Cleared');
-}
-
 function openDrawer() {
   renderDrawer();
   document.getElementById('drawer-backdrop').classList.add('open');
@@ -468,9 +595,7 @@ function closeDrawer() {
   document.getElementById('drawer-backdrop').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
 }
-function newDraftFromDrawer() {
-  createDraftAndSwitch();
-}
+function newDraftFromDrawer() { createDraftAndSwitch(); }
 
 function renderDrawer() {
   const list = document.getElementById('drawer-list');
@@ -513,6 +638,30 @@ function updateActiveTitle() {
 }
 
 // =========================================================================
+// Storage quota
+// =========================================================================
+
+function updateQuotaBar() {
+  const row = document.getElementById('quota-row');
+  const fill = document.getElementById('quota-fill');
+  const pct = document.getElementById('quota-pct');
+  const lbl = document.getElementById('quota-label');
+  // Approx limit ~5MB (varies by browser); use 5MB for the bar visual.
+  const LIMIT_BYTES = 5 * 1024 * 1024;
+  let used = 0;
+  try {
+    const raw = localStorage.getItem(LS_KEY) || '';
+    used = raw.length * 2; // UTF-16 in JS strings
+  } catch(_){ used = 0; }
+  const ratio = Math.min(1, used / LIMIT_BYTES);
+  fill.style.width = (ratio * 100).toFixed(1) + '%';
+  pct.textContent = Math.round(ratio * 100) + '%';
+  lbl.textContent = (used / 1024 / 1024).toFixed(2) + 'MB';
+  row.classList.toggle('warn', ratio >= 0.65 && ratio < 0.85);
+  row.classList.toggle('crit', ratio >= 0.85);
+}
+
+// =========================================================================
 // Utensils
 // =========================================================================
 
@@ -522,6 +671,7 @@ function addUtensil() {
   scheduleSave();
 }
 function delUtensil(i) {
+  if (!confirm(getLang()==='ar' ? 'حذف الأداة؟' : 'Delete utensil?')) return;
   state.utensils.splice(i, 1);
   renderUtensils();
   scheduleSave();
@@ -543,19 +693,27 @@ function clearUtensilImage(i) {
 
 function renderUtensils() {
   const el = document.getElementById('utensils-list');
+  document.getElementById('utensil-count').textContent = state.utensils.length;
+  if (!state.utensils.length){
+    el.innerHTML = `<div class="empty-state"><span class="emoji">🍴</span>
+      <span class="ar-only">لا أدوات بعد — اضغط على زر إضافة أداة بالأسفل</span>
+      <span class="en-only">No utensils yet — tap "Add utensil" below</span>
+    </div>`;
+    return;
+  }
   el.innerHTML = state.utensils.map((u, i) => `
     <div class="u-row">
-      <div class="u-img-wrap ${u.img ? 'has-img' : ''}">
+      <div class="u-img-wrap ${u.img ? 'has-img' : ''}" onclick="${u.img ? `openLightboxFor('utensil',${i})` : ''}">
         ${u.img ? `<img src="${u.img}" alt="">
                   <button class="u-img-clear" type="button" onclick="event.stopPropagation();clearUtensilImage(${i})">×</button>`
                : `<span class="ar-only">📷 صورة</span><span class="en-only">📷 Photo</span>`}
-        <input type="file" accept="image/*" capture="environment" onchange="onUtensilImagePick(event, ${i})">
+        ${u.img ? '' : `<input type="file" accept="image/*" capture="environment" onchange="onUtensilImagePick(event, ${i})">`}
       </div>
       <div class="u-fields">
         <input type="text" placeholder="${getLang() === 'ar' ? 'الاسم بالعربي' : 'الاسم بالعربي / Arabic'}" value="${escAttr(u.ar)}" oninput="setUtensilField(${i},'ar',this.value)">
         <input type="text" placeholder="${getLang() === 'ar' ? 'الإنجليزي' : 'English'}" value="${escAttr(u.en)}" oninput="setUtensilField(${i},'en',this.value)" style="margin-top:6px">
       </div>
-      <button class="btn-del" onclick="delUtensil(${i})">×</button>
+      <button class="btn-del" onclick="delUtensil(${i})" aria-label="delete">×</button>
     </div>
   `).join('');
 }
@@ -563,8 +721,12 @@ function renderUtensils() {
 async function onUtensilImagePick(e, i) {
   const f = e.target.files && e.target.files[0];
   if (!f) return;
-  const dataUrl = await fileToDataUrl(f);
-  setUtensilImage(i, dataUrl);
+  try {
+    const dataUrl = await compressImageFile(f);
+    setUtensilImage(i, dataUrl);
+  } catch (err) {
+    toast((getLang()==='ar' ? 'فشل تحميل الصورة: ' : 'Image failed: ') + err.message, 'error');
+  }
   e.target.value = '';
 }
 
@@ -576,22 +738,35 @@ function addStep() {
   state.steps.push(newStep());
   renderSteps();
   scheduleSave();
-  // Scroll the new step into view
   setTimeout(() => {
     const list = document.getElementById('steps-list');
     if (list && list.lastElementChild) list.lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
   }, 50);
 }
+
 function delStep(si) {
   if (!confirm(getLang() === 'ar' ? 'حذف هذه الخطوة؟' : 'Delete this step?')) return;
   state.steps.splice(si, 1);
   renderSteps();
   scheduleSave();
 }
+
+function duplicateStep(si){
+  const s = state.steps[si];
+  if (!s) return;
+  const copy = JSON.parse(JSON.stringify(s));
+  copy.collapsed = false;
+  state.steps.splice(si + 1, 0, copy);
+  renderSteps();
+  scheduleSave();
+  toast(getLang()==='ar' ? 'تم نسخ الخطوة' : 'Step duplicated');
+}
+
 function setStepField(si, field, value) {
   state.steps[si][field] = value;
   scheduleSave();
 }
+
 function moveStep(si, dir) {
   const ni = si + dir;
   if (ni < 0 || ni >= state.steps.length) return;
@@ -602,36 +777,90 @@ function moveStep(si, dir) {
   scheduleSave();
 }
 
+function toggleStepCollapse(si){
+  state.steps[si].collapsed = !state.steps[si].collapsed;
+  renderSteps();
+  scheduleSave();
+}
+
+function collapseAllSteps(collapsed){
+  state.steps.forEach(s => s.collapsed = collapsed);
+  renderSteps();
+  scheduleSave();
+}
+
 // items
 function addItem(si) {
   state.steps[si].items.push(newItem());
   renderSteps();
   scheduleSave();
+  // Focus the new last input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll(`#step-${si} .item-row .item-fields input`);
+    if (inputs.length) inputs[inputs.length - 2]?.focus();
+  }, 50);
 }
+
 function delItem(si, ii) {
   state.steps[si].items.splice(ii, 1);
+  if (!state.steps[si].items.length) state.steps[si].items.push(newItem());
   renderSteps();
   scheduleSave();
 }
+
 function setItemField(si, ii, field, value) {
   state.steps[si].items[ii][field] = value;
   scheduleSave();
+}
+
+function onItemKeydown(e, si, ii){
+  if (e.key === 'Enter'){
+    e.preventDefault();
+    // Add a new item right after this one
+    state.steps[si].items.splice(ii + 1, 0, newItem());
+    renderSteps();
+    scheduleSave();
+    setTimeout(() => {
+      const inputs = document.querySelectorAll(`#step-${si} .item-row .item-fields input`);
+      inputs[(ii + 1) * 2]?.focus();
+    }, 30);
+  }
 }
 
 // images
 async function onStepPhotosPick(e, si) {
   const files = Array.from(e.target.files || []);
   if (!files.length) return;
+  const wasCount = state.steps[si].images.length;
+  toast(getLang()==='ar' ? `جاري ضغط ${files.length} صورة…` : `Compressing ${files.length} photos…`);
   for (const f of files) {
-    const dataUrl = await fileToDataUrl(f);
-    state.steps[si].images.push(dataUrl);
+    try {
+      const dataUrl = await compressImageFile(f);
+      state.steps[si].images.push(dataUrl);
+    } catch (err) {
+      console.error('compress failed', err);
+    }
   }
   renderSteps();
   scheduleSave();
   e.target.value = '';
+  const added = state.steps[si].images.length - wasCount;
+  if (added > 0) toast(getLang()==='ar' ? `تمت إضافة ${added} صورة` : `${added} photos added`, 'success');
 }
+
 function delPhoto(si, pi) {
   state.steps[si].images.splice(pi, 1);
+  renderSteps();
+  scheduleSave();
+}
+
+function movePhoto(si, pi, dir){
+  const arr = state.steps[si].images;
+  const ni = pi + dir;
+  if (ni < 0 || ni >= arr.length) return;
+  const tmp = arr[pi];
+  arr[pi] = arr[ni];
+  arr[ni] = tmp;
   renderSteps();
   scheduleSave();
 }
@@ -657,29 +886,44 @@ function delWeightRow(si, wi) {
 }
 function setWeightField(si, wi, field, value) {
   state.steps[si].weights[wi][field] = value;
-  // Live re-render only when unit changes (toggles g/piece visibility); other fields just save
   if (field === 'unit') renderSteps();
   scheduleSave();
 }
 
 function renderSteps() {
   const el = document.getElementById('steps-list');
+  document.getElementById('step-count').textContent = state.steps.length;
   const lang = getLang();
+  if (!state.steps.length){
+    el.innerHTML = `<div class="empty-state"><span class="emoji">📋</span>
+      <span class="ar-only">لا خطوات بعد — اضغط زر إضافة خطوة بالأسفل</span>
+      <span class="en-only">No steps yet — tap "Add step" below</span>
+    </div>`;
+    return;
+  }
+
   el.innerHTML = state.steps.map((s, si) => {
     const itemsHtml = s.items.map((it, ii) => `
       <div class="item-row">
         <div class="item-fields">
-          <input type="text" placeholder="${lang==='ar'?'العنصر بالعربي':'Item in Arabic'}" value="${escAttr(it.ar)}" oninput="setItemField(${si},${ii},'ar',this.value)">
-          <input type="text" placeholder="${lang==='ar'?'الإنجليزي':'English'}" value="${escAttr(it.en)}" oninput="setItemField(${si},${ii},'en',this.value)">
+          <input type="text" placeholder="${lang==='ar'?'العنصر بالعربي':'Item in Arabic'}" value="${escAttr(it.ar)}"
+                 oninput="setItemField(${si},${ii},'ar',this.value)" onkeydown="onItemKeydown(event,${si},${ii})">
+          <input type="text" placeholder="${lang==='ar'?'الإنجليزي':'English'}" value="${escAttr(it.en)}"
+                 oninput="setItemField(${si},${ii},'en',this.value)" onkeydown="onItemKeydown(event,${si},${ii})">
         </div>
-        <button class="btn-del" onclick="delItem(${si},${ii})">×</button>
+        <button class="btn-del" onclick="delItem(${si},${ii})" aria-label="delete">×</button>
       </div>
     `).join('');
 
     const photosHtml = s.images.map((src, pi) => `
-      <div class="photo-wrap">
+      <div class="photo-wrap" onclick="openLightboxFor('step',${si},${pi})">
         <img src="${src}" alt="">
-        <button class="photo-del" onclick="delPhoto(${si},${pi})">×</button>
+        <span class="photo-num">${pi + 1}</span>
+        <div class="photo-tools" onclick="event.stopPropagation()">
+          <button onclick="event.stopPropagation();movePhoto(${si},${pi},-1)" ${pi===0?'disabled':''} aria-label="left">‹</button>
+          <button onclick="event.stopPropagation();movePhoto(${si},${pi},1)" ${pi===s.images.length-1?'disabled':''} aria-label="right">›</button>
+          <button class="photo-del" onclick="event.stopPropagation();delPhoto(${si},${pi})" aria-label="delete">×</button>
+        </div>
       </div>
     `).join('');
 
@@ -733,17 +977,22 @@ function renderSteps() {
       </div>
     `).join('');
 
+    const titleSummary = s.headingAr || s.headingEn || (lang==='ar' ? `خطوة ${si+1}` : `Step ${si+1}`);
+    const photoBadge = s.images.length ? `<span class="photo-count">📷 ${s.images.length}</span>` : '';
+
     return `
-      <div class="step">
+      <div class="step ${s.collapsed?'collapsed':''}" id="step-${si}" data-step-idx="${si}">
         <div class="step-head">
+          <div class="grab" data-drag-handle="${si}" title="${lang==='ar'?'اسحب لإعادة الترتيب':'Drag to reorder'}">⋮⋮</div>
           <span class="step-n">${String(si+1).padStart(2,'0')}</span>
-          <span class="step-title">
-            <span class="ar-only">خطوة ${si+1}</span>
-            <span class="en-only">Step ${si+1}</span>
-          </span>
-          <button class="btn-del" onclick="moveStep(${si},-1)" title="up" ${si===0?'disabled style="opacity:.3"':''}>↑</button>
-          <button class="btn-del" onclick="moveStep(${si},1)" title="down" ${si===state.steps.length-1?'disabled style="opacity:.3"':''}>↓</button>
-          <button class="btn-del" onclick="delStep(${si})">×</button>
+          <div class="step-title" onclick="toggleStepCollapse(${si})">
+            <span class="step-collapse">▼</span>
+            <span class="step-title-text">${escAttr(titleSummary)}</span>
+            ${photoBadge}
+          </div>
+          <button class="btn-icon" onclick="moveStep(${si},-1)" title="up" ${si===0?'disabled':''}>↑</button>
+          <button class="btn-icon" onclick="moveStep(${si},1)" title="down" ${si===state.steps.length-1?'disabled':''}>↓</button>
+          <button class="btn-del" onclick="delStep(${si})" aria-label="delete">×</button>
         </div>
         <div class="step-body">
           <div class="field">
@@ -764,7 +1013,7 @@ function renderSteps() {
           </div>
 
           <div class="field">
-            <label>${lang==='ar'?'الصور':'Photos'}</label>
+            <label>${lang==='ar'?'الصور':'Photos'} ${s.images.length?`(${s.images.length})`:''}</label>
             <div class="photos">${photosHtml}</div>
             <label class="photos-add">
               <span class="ar-only">📷 إضافة صور</span>
@@ -786,11 +1035,130 @@ function renderSteps() {
               <span class="ar-only">+ مكوّن</span><span class="en-only">+ ingredient</span>
             </button>` : ''}
           </div>
+
+          <div class="step-actions">
+            <button class="btn ghost" onclick="duplicateStep(${si})">
+              <span class="ar-only">📑 نسخ الخطوة</span><span class="en-only">📑 Duplicate</span>
+            </button>
+            <button class="btn ghost" onclick="toggleStepCollapse(${si})">
+              <span class="ar-only">⊟ طيّ</span><span class="en-only">⊟ Collapse</span>
+            </button>
+          </div>
         </div>
       </div>
     `;
   }).join('');
+
+  bindStepDrag();
 }
+
+// =========================================================================
+// Drag-to-reorder for steps (touch + mouse via Pointer Events)
+// =========================================================================
+
+let _drag = null;
+
+function bindStepDrag(){
+  document.querySelectorAll('.step .grab').forEach(handle => {
+    handle.addEventListener('pointerdown', onDragStart);
+  });
+}
+
+function onDragStart(e){
+  if (e.button !== undefined && e.button !== 0) return;
+  e.preventDefault();
+  const step = e.currentTarget.closest('.step');
+  if (!step) return;
+  _drag = {
+    fromIdx: parseInt(step.dataset.stepIdx, 10),
+    el: step,
+    startY: e.clientY,
+    pointerId: e.pointerId,
+  };
+  step.classList.add('dragging');
+  e.currentTarget.setPointerCapture(e.pointerId);
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd, { once: true });
+  document.addEventListener('pointercancel', onDragEnd, { once: true });
+}
+
+function onDragMove(e){
+  if (!_drag) return;
+  const stepsList = document.getElementById('steps-list');
+  const allSteps = Array.from(stepsList.querySelectorAll('.step'));
+  let target = null;
+  for (const s of allSteps){
+    if (s === _drag.el) continue;
+    const rect = s.getBoundingClientRect();
+    if (e.clientY >= rect.top && e.clientY <= rect.bottom){ target = s; break; }
+  }
+  allSteps.forEach(s => s.classList.toggle('drag-over', s === target));
+}
+
+function onDragEnd(e){
+  if (!_drag) return;
+  document.removeEventListener('pointermove', onDragMove);
+  const stepsList = document.getElementById('steps-list');
+  const allSteps = Array.from(stepsList.querySelectorAll('.step'));
+  let toIdx = _drag.fromIdx;
+  for (let i = 0; i < allSteps.length; i++){
+    if (allSteps[i].classList.contains('drag-over')){
+      toIdx = parseInt(allSteps[i].dataset.stepIdx, 10);
+      break;
+    }
+  }
+  allSteps.forEach(s => s.classList.remove('drag-over','dragging'));
+  if (toIdx !== _drag.fromIdx){
+    const moved = state.steps.splice(_drag.fromIdx, 1)[0];
+    state.steps.splice(toIdx, 0, moved);
+    renderSteps();
+    scheduleSave();
+  }
+  _drag = null;
+}
+
+// =========================================================================
+// Lightbox
+// =========================================================================
+
+let _lb = { list: [], idx: 0 };
+
+function openLightboxFor(kind, si, pi){
+  if (kind === 'utensil'){
+    _lb.list = state.utensils.filter(u => u.img).map(u => u.img);
+    const img = state.utensils[si].img;
+    _lb.idx = Math.max(0, _lb.list.indexOf(img));
+  } else if (kind === 'step'){
+    _lb.list = state.steps[si].images.slice();
+    _lb.idx = pi || 0;
+  }
+  if (!_lb.list.length) return;
+  document.getElementById('lightbox').classList.add('open');
+  renderLightbox();
+}
+
+function renderLightbox(){
+  document.getElementById('lightbox-img').src = _lb.list[_lb.idx] || '';
+  document.getElementById('lb-counter').textContent = `${_lb.idx + 1} / ${_lb.list.length}`;
+  document.getElementById('lb-prev').disabled = _lb.idx === 0;
+  document.getElementById('lb-next').disabled = _lb.idx >= _lb.list.length - 1;
+}
+
+function lightboxNav(dir){
+  _lb.idx = Math.max(0, Math.min(_lb.list.length - 1, _lb.idx + dir));
+  renderLightbox();
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') lightboxNav(getLang()==='ar' ? 1 : -1);
+  else if (e.key === 'ArrowRight') lightboxNav(getLang()==='ar' ? -1 : 1);
+});
 
 // =========================================================================
 // Helpers
@@ -800,42 +1168,39 @@ function escAttr(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = () => reject(new Error('read failed'));
-    r.readAsDataURL(file);
-  });
-}
-
-function flash(msg, kind) {
-  const el = document.getElementById('flash');
+let toastTimer = null;
+function toast(msg, kind) {
+  const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'flash show' + (kind ? ' ' + kind : '');
-  setTimeout(() => { el.className = 'flash'; }, 1800);
+  el.className = 'toast show' + (kind ? ' ' + kind : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 2200);
 }
+const flash = toast; // keep old name working
 
 // =========================================================================
 // Export
 // =========================================================================
 
 function buildExportPayload() {
-  // Pull latest title values
   state.titleAr = document.getElementById('titleAr').value;
   state.titleEn = document.getElementById('titleEn').value;
 
-  // Validate
-  if (!state.titleAr.trim() || !state.titleEn.trim()) {
-    flash(getLang()==='ar' ? 'العنوان بالعربي والإنجليزي مطلوبان' : 'Both Arabic and English titles are required', 'error');
+  // Validate with visual highlights
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  let invalid = false;
+  if (!state.titleAr.trim()){ document.getElementById('titleAr').classList.add('invalid'); invalid = true; }
+  if (!state.titleEn.trim()){ document.getElementById('titleEn').classList.add('invalid'); invalid = true; }
+  if (invalid){
+    toast(getLang()==='ar' ? 'العنوان بالعربي والإنجليزي مطلوبان' : 'Both Arabic and English titles are required', 'error');
+    document.getElementById('titleAr').scrollIntoView({behavior:'smooth', block:'center'});
     return null;
   }
   if (!state.steps.length && !state.utensils.length) {
-    flash(getLang()==='ar' ? 'أضف خطوة أو أداة على الأقل' : 'Add at least one step or utensil', 'error');
+    toast(getLang()==='ar' ? 'أضف خطوة أو أداة على الأقل' : 'Add at least one step or utensil', 'error');
     return null;
   }
 
-  // Build the recipe object (matching desktop schema in data/recipes.json)
   const recipeSteps = [];
 
   if (state.utensils.length) {
@@ -923,7 +1288,8 @@ function exportRecipe() {
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
-  flash(getLang()==='ar' ? 'تم التصدير ✓' : 'Exported ✓', 'success');
+  const sizeKb = Math.round(json.length / 1024);
+  toast((getLang()==='ar' ? 'تم التصدير ✓ ' : 'Exported ✓ ') + `(${sizeKb}KB)`, 'success');
 }
 
 async function copyExportJson() {
@@ -932,15 +1298,14 @@ async function copyExportJson() {
   const json = JSON.stringify(payload);
   try {
     await navigator.clipboard.writeText(json);
-    flash(getLang()==='ar' ? 'تم النسخ للحافظة ✓' : 'Copied to clipboard ✓', 'success');
+    toast(getLang()==='ar' ? 'تم النسخ للحافظة ✓' : 'Copied to clipboard ✓', 'success');
   } catch (e) {
-    // Fallback for older browsers
     const ta = document.createElement('textarea');
     ta.value = json;
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand('copy'); flash(getLang()==='ar' ? 'تم النسخ ✓' : 'Copied ✓', 'success'); }
-    catch (_) { flash(getLang()==='ar' ? 'فشل النسخ' : 'Copy failed', 'error'); }
+    try { document.execCommand('copy'); toast(getLang()==='ar' ? 'تم النسخ ✓' : 'Copied ✓', 'success'); }
+    catch (_) { toast(getLang()==='ar' ? 'فشل النسخ' : 'Copy failed', 'error'); }
     document.body.removeChild(ta);
   }
 }
@@ -955,14 +1320,13 @@ function renderAll() {
   renderUtensils();
   renderSteps();
   updateActiveTitle();
+  updateQuotaBar();
 }
 
 (function boot() {
-  // Restore lang
   let savedLang = 'ar';
   try { savedLang = localStorage.getItem(LS_LANG) || 'ar'; } catch(_){}
   setLang(savedLang);
-  // Load all drafts (or migrate legacy single-draft); ensure at least one exists
   loadAllDrafts();
   if (!allDrafts.drafts[allDrafts.activeId]){
     const fresh = newDraft();
@@ -973,7 +1337,6 @@ function renderAll() {
   }
   renderAll();
   document.getElementById('save-hint').textContent = '';
-  // Save before unload, just in case
   window.addEventListener('beforeunload', saveNow);
 })();
 </script>
