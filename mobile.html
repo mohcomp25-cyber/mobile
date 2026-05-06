@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>نملية — إدخال وصفة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --accent:#ff5722;
+    --danger:#d32f2f;
+    --line:#e0e0e0;
+    --soft:#f5f5f0;
+    --muted:#666;
+    --bg:#fafaf7;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:#222;font-family:'Noto Kufi Arabic',sans-serif;font-size:16px;-webkit-text-size-adjust:100%}
+  html[lang="en"] body{font-family:'Inter',sans-serif}
+  body{padding-bottom:90px;min-height:100vh}
+
+  /* --- Top bar --- */
+  .topbar{position:sticky;top:0;z-index:50;background:#000;color:#fff;display:flex;align-items:center;gap:8px;padding:10px 12px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .topbar h1{flex:1;margin:0;font-size:14px;font-weight:700;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
+  html[lang="ar"] .topbar h1{font-family:'Noto Kufi Arabic',sans-serif;font-size:15px}
+  .topbar button{background:#fff;color:#000;border:1.5px solid #fff;padding:7px 12px;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
+  .topbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .topbar button.danger{background:transparent;color:#fff;border-color:#fff}
+  .topbar .save-hint{font-size:10px;opacity:.7;font-family:'JetBrains Mono',monospace}
+
+  main{padding:14px}
+
+  /* --- Section card --- */
+  .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px;margin:0 0 14px}
+  .card > h2{margin:0 0 12px;font-size:15px;font-weight:700;color:#000;letter-spacing:.05em;border-bottom:2px solid var(--accent);padding-bottom:6px}
+
+  /* --- Inputs --- */
+  input[type=text], textarea, input[type=number]{
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:4px;
+    font:inherit;font-size:15px;background:#fff;color:#222;
+  }
+  input[type=text]:focus, textarea:focus, input[type=number]:focus{outline:none;border-color:var(--accent)}
+  textarea{resize:vertical;min-height:60px}
+  label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin:0 0 4px;letter-spacing:.05em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+  html[lang="ar"] label{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0;font-size:12px;text-transform:none}
+  .field{margin:0 0 10px}
+
+  select{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:4px;font:inherit;background:#fff}
+
+  /* --- Add/Remove buttons --- */
+  .btn{padding:10px 14px;border-radius:4px;border:1.5px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;font-family:inherit;font-size:13px}
+  .btn:hover{background:var(--accent);color:#fff}
+  .btn.full{width:100%;padding:12px}
+  .btn.dashed{border-style:dashed}
+  .btn-del{background:#fff;border:1.5px solid var(--danger);color:var(--danger);width:32px;height:32px;border-radius:4px;font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0}
+  .btn-del:hover{background:var(--danger);color:#fff}
+
+  /* --- Utensil row --- */
+  .u-row{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--soft);border-radius:4px;margin:0 0 8px}
+  .u-row .u-fields{flex:1;min-width:0}
+  .u-row .u-img-wrap{position:relative;flex-shrink:0;width:64px;height:64px;border:1.5px dashed var(--line);background:#fff;border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;cursor:pointer}
+  .u-row .u-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .u-row .u-img-wrap input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .u-row .u-img-wrap .u-img-clear{position:absolute;top:2px;inset-inline-end:2px;width:20px;height:20px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+  .u-row .u-img-wrap.has-img .u-img-clear{display:flex}
+
+  /* --- Step --- */
+  .step{background:#fff;border:1.5px solid var(--line);border-radius:6px;margin:0 0 12px;overflow:hidden}
+  .step-head{display:flex;align-items:center;gap:8px;background:var(--soft);padding:10px 12px;border-bottom:1px solid var(--line)}
+  .step-head .step-n{flex-shrink:0;background:#000;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 8px;border-radius:3px}
+  .step-head .step-title{flex:1;font-weight:700;font-size:13px;color:var(--muted)}
+  .step-body{padding:12px}
+
+  /* --- Items --- */
+  .item-row{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px}
+  .item-row > div{flex:1}
+  .item-row .item-fields{display:flex;flex-direction:column;gap:6px;flex:1}
+  .item-row .item-fields input{font-size:14px;padding:9px 10px}
+
+  /* --- Photos in step --- */
+  .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin:6px 0}
+  .photos .photo-wrap{position:relative;aspect-ratio:1;background:#eee;border-radius:4px;overflow:hidden}
+  .photos .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .photos .photo-wrap .photo-del{position:absolute;top:3px;inset-inline-end:3px;width:22px;height:22px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .photos-add{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px dashed var(--accent);color:var(--accent);background:#fff;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;position:relative;overflow:hidden}
+  .photos-add input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+  /* --- Weights table --- */
+  .w-toggle{display:flex;align-items:center;justify-content:space-between;background:#000;color:#fff;padding:8px 12px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.1em;font-family:'JetBrains Mono',monospace;margin:8px 0}
+  html[lang="ar"] .w-toggle{font-family:'Noto Kufi Arabic',sans-serif;letter-spacing:0;font-size:13px}
+  .w-toggle .w-count{color:var(--accent)}
+  .w-table{display:none}
+  .w-table.open{display:block}
+  .w-row{background:var(--soft);border-radius:4px;padding:10px;margin:0 0 8px}
+  .w-row .w-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .w-row .w-grid .full-row{grid-column:1/-1}
+
+  /* --- Lang toggle --- */
+  body.lang-en .ar-only{display:none}
+  body.lang-ar .en-only{display:none}
+
+  /* --- Bottom action bar (sticky export) --- */
+  .bottombar{position:fixed;bottom:0;inset-inline-start:0;inset-inline-end:0;z-index:50;background:#fff;border-top:2px solid var(--accent);padding:10px 14px;display:flex;gap:8px;box-shadow:0 -4px 12px rgba(0,0,0,.08)}
+  .bottombar button{flex:1;padding:14px;border-radius:4px;font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-family:inherit}
+  .bottombar button.secondary{background:#fff;color:var(--accent)}
+  .bottombar button:disabled{opacity:.5;cursor:not-allowed}
+
+  /* --- Status flash --- */
+  .flash{position:fixed;top:60px;inset-inline-start:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 16px;border-radius:4px;font-size:13px;font-weight:600;z-index:100;opacity:0;transition:opacity .2s;pointer-events:none}
+  html[dir="rtl"] .flash{transform:translateX(50%)}
+  .flash.show{opacity:1}
+  .flash.error{background:var(--danger)}
+  .flash.success{background:#2f8a3e}
+
+  /* --- Drafts drawer --- */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:none}
+  .drawer-backdrop.open{display:block}
+  .drawer{position:fixed;inset-inline-start:0;inset-inline-end:0;bottom:0;background:#fff;z-index:91;border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);max-height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease}
+  .drawer.open{transform:translateY(0)}
+  .drawer-head{display:flex;align-items:center;gap:8px;padding:14px;border-bottom:1px solid var(--line)}
+  .drawer-head h3{flex:1;margin:0;font-size:16px;font-weight:700}
+  .drawer-list{overflow-y:auto;padding:6px 0;flex:1}
+  .draft-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+  .draft-row:hover{background:var(--soft)}
+  .draft-row.active{background:#fff5ef;border-inline-start:4px solid var(--accent);padding-inline-start:10px}
+  .draft-row .draft-info{flex:1;min-width:0}
+  .draft-row .draft-title{font-weight:700;font-size:14px;color:#222;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .draft-row .draft-meta{font-size:11px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+  .draft-row .draft-actions{display:flex;gap:6px;flex-shrink:0}
+  .draft-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px}
+
+  .topbar .draft-pill{flex:1;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);padding:7px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;font-family:inherit;min-width:0}
+  .topbar .draft-pill .pill-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start}
+  .topbar .draft-pill .pill-icon{font-size:10px;opacity:.7}
+
+  /* --- Help --- */
+  .help{font-size:12px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:4px;padding:10px 12px;margin:0 0 14px;line-height:1.6}
+</style>
+</head>
+<body class="lang-ar">
+
+<div class="topbar">
+  <button class="draft-pill" onclick="openDrawer()">
+    <span class="pill-icon">📂</span>
+    <span class="pill-title" id="active-title">—</span>
+    <span class="pill-icon">▾</span>
+  </button>
+  <span class="save-hint" id="save-hint">●</span>
+  <button onclick="toggleLang()" id="lang-btn">EN</button>
+</div>
+
+<!-- Drafts drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>
+      <span class="ar-only">المسوّدات</span>
+      <span class="en-only">Drafts</span>
+    </h3>
+    <button class="btn" onclick="newDraftFromDrawer()">
+      <span class="ar-only">+ جديدة</span>
+      <span class="en-only">+ New</span>
+    </button>
+    <button class="btn-del" onclick="closeDrawer()">×</button>
+  </div>
+  <div class="drawer-list" id="drawer-list"></div>
+</div>
+
+<div id="flash" class="flash"></div>
+
+<main>
+
+  <div class="help">
+    <span class="ar-only">
+      املأ تفاصيل الوصفة، صور الخطوات، ثم اضغط <b>تصدير</b>. الملف ينزل JSON واحد، أرسله للكمبيوتر وأستورده هناك.
+      <br>الصفحة تحفظ تلقائيًا — تقدر تقفل وترجع.
+    </span>
+    <span class="en-only">
+      Fill the recipe, take photos, then tap <b>Export</b>. A single JSON file downloads — send it to the PC for import.
+      <br>Drafts are auto-saved locally.
+    </span>
+  </div>
+
+  <!-- Title block -->
+  <section class="card">
+    <h2><span class="ar-only">العنوان</span><span class="en-only">Title</span></h2>
+    <div class="field">
+      <label>
+        <span class="ar-only">الاسم بالعربي *</span>
+        <span class="en-only">Arabic title *</span>
+      </label>
+      <input type="text" id="titleAr" placeholder="مثال: نعناع تبولة" oninput="onChange()">
+    </div>
+    <div class="field">
+      <label>
+        <span class="ar-only">الاسم بالإنجليزي *</span>
+        <span class="en-only">English title *</span>
+      </label>
+      <input type="text" id="titleEn" placeholder="e.g. Mint Tabbouleh" oninput="onChange()">
+    </div>
+  </section>
+
+  <!-- Utensils -->
+  <section class="card">
+    <h2><span class="ar-only">الأدوات</span><span class="en-only">Utensils</span></h2>
+    <div id="utensils-list"></div>
+    <button class="btn full dashed" onclick="addUtensil()">
+      <span class="ar-only">+ إضافة أداة</span>
+      <span class="en-only">+ Add utensil</span>
+    </button>
+  </section>
+
+  <!-- Steps -->
+  <section class="card">
+    <h2><span class="ar-only">الخطوات</span><span class="en-only">Steps</span></h2>
+    <div id="steps-list"></div>
+    <button class="btn full dashed" onclick="addStep()">
+      <span class="ar-only">+ إضافة خطوة</span>
+      <span class="en-only">+ Add step</span>
+    </button>
+  </section>
+
+</main>
+
+<div class="bottombar">
+  <button class="secondary" onclick="copyExportJson()">
+    <span class="ar-only">📋 نسخ JSON</span>
+    <span class="en-only">📋 Copy JSON</span>
+  </button>
+  <button onclick="exportRecipe()">
+    <span class="ar-only">⬇️ تصدير ملف</span>
+    <span class="en-only">⬇️ Export file</span>
+  </button>
+</div>
+
+<script>
+'use strict';
+
+// =========================================================================
+// Constants & data model
+// =========================================================================
+
+const LS_KEY_OLD = 'namliah-mobile-draft-v1';   // legacy single-draft (auto-migrated)
+const LS_KEY = 'namliah-mobile-drafts-v2';      // { activeId, drafts: { id: state } }
+const LS_LANG = 'namliah-mobile-lang';
+
+const UNITS = [
+  { code: 'g',   ar: 'جم'  },
+  { code: 'kg',  ar: 'كجم' },
+  { code: 'l',   ar: 'لتر' },
+  { code: 'pcs', ar: 'حبة' },
+];
+
+function newUtensil()  { return { ar: '', en: '', img: '' }; }
+function newItem()     { return { ar: '', en: '' }; }
+function newWeight()   { return { name: '', nameAr: '', amount: '', unit: 'g', pieceWeight: '', state: '', stateAr: '', note: '', noteAr: '' }; }
+function newStep() {
+  return {
+    headingAr: '',
+    headingEn: '',
+    items: [newItem()],
+    images: [],
+    weights: [],
+    showWeights: false,
+  };
+}
+
+function newDraft() {
+  return {
+    id: 'd-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+    titleAr: '',
+    titleEn: '',
+    utensils: [],
+    steps: [],
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+let state = newDraft();
+let allDrafts = { activeId: state.id, drafts: { [state.id]: state } };
+
+// =========================================================================
+// Lang
+// =========================================================================
+
+function getLang() {
+  return document.documentElement.lang === 'ar' ? 'ar' : 'en';
+}
+function setLang(lang) {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('lang-ar', lang === 'ar');
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('lang-btn').textContent = lang === 'ar' ? 'EN' : 'AR';
+  try { localStorage.setItem(LS_LANG, lang); } catch (_) {}
+}
+function toggleLang() {
+  setLang(getLang() === 'ar' ? 'en' : 'ar');
+}
+
+// =========================================================================
+// Persist (localStorage)
+// =========================================================================
+
+let saveTimer = null;
+function onChange() {
+  // Pull all top-level inputs into state
+  state.titleAr = document.getElementById('titleAr').value;
+  state.titleEn = document.getElementById('titleEn').value;
+  scheduleSave();
+}
+function scheduleSave() {
+  document.getElementById('save-hint').textContent = '●';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 350);
+}
+function saveNow() {
+  // Pull latest title fields from inputs (in case caller didn't)
+  const titleArEl = document.getElementById('titleAr');
+  const titleEnEl = document.getElementById('titleEn');
+  if (titleArEl) state.titleAr = titleArEl.value;
+  if (titleEnEl) state.titleEn = titleEnEl.value;
+  state.updatedAt = new Date().toISOString();
+  allDrafts.activeId = state.id;
+  allDrafts.drafts[state.id] = state;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(allDrafts));
+    document.getElementById('save-hint').textContent = '✓';
+  } catch (e) {
+    document.getElementById('save-hint').textContent = '!';
+    flash(getLang()==='ar' ? 'الذاكرة ممتلئة — صدّر الوصفة الآن' : 'Storage full — export now', 'error');
+  }
+  updateActiveTitle();
+}
+
+function normalizeDraft(parsed) {
+  const d = newDraft();
+  if (!parsed || typeof parsed !== 'object') return d;
+  d.id = parsed.id || d.id;
+  d.titleAr = parsed.titleAr || '';
+  d.titleEn = parsed.titleEn || '';
+  d.updatedAt = parsed.updatedAt || d.updatedAt;
+  d.utensils = Array.isArray(parsed.utensils)
+    ? parsed.utensils.map(u => Object.assign(newUtensil(), u))
+    : [];
+  d.steps = Array.isArray(parsed.steps)
+    ? parsed.steps.map(s => Object.assign(newStep(), s, {
+        items: Array.isArray(s.items) ? s.items.map(i => Object.assign(newItem(), i)) : [],
+        images: Array.isArray(s.images) ? s.images.slice() : [],
+        weights: Array.isArray(s.weights) ? s.weights.map(w => Object.assign(newWeight(), w)) : [],
+      }))
+    : [];
+  return d;
+}
+
+function loadAllDrafts() {
+  try {
+    // Migrate legacy single-draft if present
+    const legacyRaw = localStorage.getItem(LS_KEY_OLD);
+    const newRaw = localStorage.getItem(LS_KEY);
+    if (legacyRaw && !newRaw) {
+      const legacy = normalizeDraft(JSON.parse(legacyRaw));
+      allDrafts = { activeId: legacy.id, drafts: { [legacy.id]: legacy } };
+      state = legacy;
+      try { localStorage.removeItem(LS_KEY_OLD); } catch(_){}
+      saveNow();
+      return true;
+    }
+    if (!newRaw) return false;
+    const parsed = JSON.parse(newRaw);
+    if (!parsed || !parsed.drafts || typeof parsed.drafts !== 'object') return false;
+    allDrafts = { activeId: parsed.activeId || '', drafts: {} };
+    for (const [id, d] of Object.entries(parsed.drafts)) {
+      allDrafts.drafts[id] = normalizeDraft(d);
+      allDrafts.drafts[id].id = id;
+    }
+    let activeId = allDrafts.activeId;
+    if (!allDrafts.drafts[activeId]){
+      // Pick the most recently updated, else create one
+      const ids = Object.keys(allDrafts.drafts);
+      if (!ids.length){
+        const fresh = newDraft();
+        allDrafts.drafts[fresh.id] = fresh;
+        activeId = fresh.id;
+      } else {
+        activeId = ids.sort((a, b) =>
+          (allDrafts.drafts[b].updatedAt || '').localeCompare(allDrafts.drafts[a].updatedAt || '')
+        )[0];
+      }
+      allDrafts.activeId = activeId;
+    }
+    state = allDrafts.drafts[activeId];
+    return true;
+  } catch (e) {
+    console.warn('draft load failed', e);
+    return false;
+  }
+}
+
+function switchToDraft(id) {
+  if (!allDrafts.drafts[id]) return;
+  // Save current first
+  saveNow();
+  state = allDrafts.drafts[id];
+  allDrafts.activeId = id;
+  saveNow();
+  renderAll();
+  closeDrawer();
+}
+
+function createDraftAndSwitch() {
+  saveNow();
+  const fresh = newDraft();
+  allDrafts.drafts[fresh.id] = fresh;
+  allDrafts.activeId = fresh.id;
+  state = fresh;
+  saveNow();
+  renderAll();
+  closeDrawer();
+  flash(getLang() === 'ar' ? 'وصفة جديدة' : 'New draft');
+}
+
+function deleteDraft(id) {
+  const d = allDrafts.drafts[id];
+  if (!d) return;
+  const title = d.titleAr || d.titleEn || (getLang()==='ar' ? 'بدون عنوان' : 'Untitled');
+  if (!confirm((getLang() === 'ar' ? 'حذف المسودة "' : 'Delete draft "') + title + '"?')) return;
+  delete allDrafts.drafts[id];
+  if (id === allDrafts.activeId){
+    const ids = Object.keys(allDrafts.drafts);
+    if (ids.length){
+      allDrafts.activeId = ids[0];
+      state = allDrafts.drafts[allDrafts.activeId];
+    } else {
+      const fresh = newDraft();
+      allDrafts.drafts[fresh.id] = fresh;
+      allDrafts.activeId = fresh.id;
+      state = fresh;
+    }
+  }
+  saveNow();
+  renderAll();
+  renderDrawer();
+}
+
+function resetDraft() {
+  if (!confirm(getLang() === 'ar' ? 'مسح هذه المسودة؟' : 'Clear this draft?')) return;
+  const id = state.id;
+  state = newDraft();
+  state.id = id;
+  allDrafts.drafts[id] = state;
+  saveNow();
+  renderAll();
+  flash(getLang() === 'ar' ? 'تم المسح' : 'Cleared');
+}
+
+function openDrawer() {
+  renderDrawer();
+  document.getElementById('drawer-backdrop').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+function newDraftFromDrawer() {
+  createDraftAndSwitch();
+}
+
+function renderDrawer() {
+  const list = document.getElementById('drawer-list');
+  const lang = getLang();
+  const ids = Object.keys(allDrafts.drafts).sort((a, b) =>
+    (allDrafts.drafts[b].updatedAt || '').localeCompare(allDrafts.drafts[a].updatedAt || '')
+  );
+  if (!ids.length){
+    list.innerHTML = `<div class="draft-empty">${lang==='ar'?'لا مسوّدات':'No drafts'}</div>`;
+    return;
+  }
+  list.innerHTML = ids.map(id => {
+    const d = allDrafts.drafts[id];
+    const title = d.titleAr || d.titleEn || (lang==='ar' ? '(بدون عنوان)' : '(Untitled)');
+    const photoCount = (d.steps || []).reduce((acc, s) => acc + ((s.images||[]).length), 0)
+                     + (d.utensils || []).filter(u => u.img).length;
+    const stepCount = (d.steps || []).length;
+    const utCount = (d.utensils || []).length;
+    const updatedAt = d.updatedAt ? new Date(d.updatedAt).toLocaleString(lang==='ar'?'ar-SA':'en-GB') : '';
+    return `
+      <div class="draft-row ${id===allDrafts.activeId?'active':''}" onclick="switchToDraft('${escAttr(id)}')">
+        <div class="draft-info">
+          <div class="draft-title">${escAttr(title)}</div>
+          <div class="draft-meta">${stepCount} ${lang==='ar'?'خطوات':'steps'} · ${utCount} ${lang==='ar'?'أدوات':'utensils'} · ${photoCount} ${lang==='ar'?'صور':'photos'} · ${escAttr(updatedAt)}</div>
+        </div>
+        <div class="draft-actions">
+          <button class="btn-del" onclick="event.stopPropagation();deleteDraft('${escAttr(id)}')" title="Delete">×</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateActiveTitle() {
+  const lang = getLang();
+  const el = document.getElementById('active-title');
+  if (!el) return;
+  const title = state.titleAr || state.titleEn || (lang==='ar' ? '(بدون عنوان)' : '(Untitled)');
+  el.textContent = title;
+}
+
+// =========================================================================
+// Utensils
+// =========================================================================
+
+function addUtensil() {
+  state.utensils.push(newUtensil());
+  renderUtensils();
+  scheduleSave();
+}
+function delUtensil(i) {
+  state.utensils.splice(i, 1);
+  renderUtensils();
+  scheduleSave();
+}
+function setUtensilField(i, field, value) {
+  state.utensils[i][field] = value;
+  scheduleSave();
+}
+function setUtensilImage(i, dataUrl) {
+  state.utensils[i].img = dataUrl;
+  renderUtensils();
+  scheduleSave();
+}
+function clearUtensilImage(i) {
+  state.utensils[i].img = '';
+  renderUtensils();
+  scheduleSave();
+}
+
+function renderUtensils() {
+  const el = document.getElementById('utensils-list');
+  el.innerHTML = state.utensils.map((u, i) => `
+    <div class="u-row">
+      <div class="u-img-wrap ${u.img ? 'has-img' : ''}">
+        ${u.img ? `<img src="${u.img}" alt="">
+                  <button class="u-img-clear" type="button" onclick="event.stopPropagation();clearUtensilImage(${i})">×</button>`
+               : `<span class="ar-only">📷 صورة</span><span class="en-only">📷 Photo</span>`}
+        <input type="file" accept="image/*" capture="environment" onchange="onUtensilImagePick(event, ${i})">
+      </div>
+      <div class="u-fields">
+        <input type="text" placeholder="${getLang() === 'ar' ? 'الاسم بالعربي' : 'الاسم بالعربي / Arabic'}" value="${escAttr(u.ar)}" oninput="setUtensilField(${i},'ar',this.value)">
+        <input type="text" placeholder="${getLang() === 'ar' ? 'الإنجليزي' : 'English'}" value="${escAttr(u.en)}" oninput="setUtensilField(${i},'en',this.value)" style="margin-top:6px">
+      </div>
+      <button class="btn-del" onclick="delUtensil(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+async function onUtensilImagePick(e, i) {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const dataUrl = await fileToDataUrl(f);
+  setUtensilImage(i, dataUrl);
+  e.target.value = '';
+}
+
+// =========================================================================
+// Steps
+// =========================================================================
+
+function addStep() {
+  state.steps.push(newStep());
+  renderSteps();
+  scheduleSave();
+  // Scroll the new step into view
+  setTimeout(() => {
+    const list = document.getElementById('steps-list');
+    if (list && list.lastElementChild) list.lastElementChild.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+function delStep(si) {
+  if (!confirm(getLang() === 'ar' ? 'حذف هذه الخطوة؟' : 'Delete this step?')) return;
+  state.steps.splice(si, 1);
+  renderSteps();
+  scheduleSave();
+}
+function setStepField(si, field, value) {
+  state.steps[si][field] = value;
+  scheduleSave();
+}
+function moveStep(si, dir) {
+  const ni = si + dir;
+  if (ni < 0 || ni >= state.steps.length) return;
+  const tmp = state.steps[si];
+  state.steps[si] = state.steps[ni];
+  state.steps[ni] = tmp;
+  renderSteps();
+  scheduleSave();
+}
+
+// items
+function addItem(si) {
+  state.steps[si].items.push(newItem());
+  renderSteps();
+  scheduleSave();
+}
+function delItem(si, ii) {
+  state.steps[si].items.splice(ii, 1);
+  renderSteps();
+  scheduleSave();
+}
+function setItemField(si, ii, field, value) {
+  state.steps[si].items[ii][field] = value;
+  scheduleSave();
+}
+
+// images
+async function onStepPhotosPick(e, si) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  for (const f of files) {
+    const dataUrl = await fileToDataUrl(f);
+    state.steps[si].images.push(dataUrl);
+  }
+  renderSteps();
+  scheduleSave();
+  e.target.value = '';
+}
+function delPhoto(si, pi) {
+  state.steps[si].images.splice(pi, 1);
+  renderSteps();
+  scheduleSave();
+}
+
+// weights
+function toggleWeights(si) {
+  state.steps[si].showWeights = !state.steps[si].showWeights;
+  if (state.steps[si].showWeights && state.steps[si].weights.length === 0) {
+    state.steps[si].weights.push(newWeight());
+  }
+  renderSteps();
+  scheduleSave();
+}
+function addWeightRow(si) {
+  state.steps[si].weights.push(newWeight());
+  renderSteps();
+  scheduleSave();
+}
+function delWeightRow(si, wi) {
+  state.steps[si].weights.splice(wi, 1);
+  renderSteps();
+  scheduleSave();
+}
+function setWeightField(si, wi, field, value) {
+  state.steps[si].weights[wi][field] = value;
+  // Live re-render only when unit changes (toggles g/piece visibility); other fields just save
+  if (field === 'unit') renderSteps();
+  scheduleSave();
+}
+
+function renderSteps() {
+  const el = document.getElementById('steps-list');
+  const lang = getLang();
+  el.innerHTML = state.steps.map((s, si) => {
+    const itemsHtml = s.items.map((it, ii) => `
+      <div class="item-row">
+        <div class="item-fields">
+          <input type="text" placeholder="${lang==='ar'?'العنصر بالعربي':'Item in Arabic'}" value="${escAttr(it.ar)}" oninput="setItemField(${si},${ii},'ar',this.value)">
+          <input type="text" placeholder="${lang==='ar'?'الإنجليزي':'English'}" value="${escAttr(it.en)}" oninput="setItemField(${si},${ii},'en',this.value)">
+        </div>
+        <button class="btn-del" onclick="delItem(${si},${ii})">×</button>
+      </div>
+    `).join('');
+
+    const photosHtml = s.images.map((src, pi) => `
+      <div class="photo-wrap">
+        <img src="${src}" alt="">
+        <button class="photo-del" onclick="delPhoto(${si},${pi})">×</button>
+      </div>
+    `).join('');
+
+    const weightsHtml = s.weights.map((w, wi) => `
+      <div class="w-row">
+        <div class="w-grid">
+          <div class="full-row">
+            <label>${lang==='ar'?'المكوّن (عربي)':'Ingredient (Arabic)'}</label>
+            <input type="text" value="${escAttr(w.nameAr)}" oninput="setWeightField(${si},${wi},'nameAr',this.value)">
+          </div>
+          <div class="full-row">
+            <label>${lang==='ar'?'المكوّن (إنجليزي)':'Ingredient (English)'}</label>
+            <input type="text" value="${escAttr(w.name)}" oninput="setWeightField(${si},${wi},'name',this.value)">
+          </div>
+          <div>
+            <label>${lang==='ar'?'الكمية':'Amount'}</label>
+            <input type="text" inputmode="decimal" value="${escAttr(w.amount)}" oninput="setWeightField(${si},${wi},'amount',this.value)">
+          </div>
+          <div>
+            <label>${lang==='ar'?'الوحدة':'Unit'}</label>
+            <select onchange="setWeightField(${si},${wi},'unit',this.value)">
+              ${UNITS.map(u => `<option value="${u.code}" ${u.code===w.unit?'selected':''}>${u.code} · ${u.ar}</option>`).join('')}
+            </select>
+          </div>
+          ${w.unit === 'pcs' ? `
+            <div class="full-row">
+              <label>${lang==='ar'?'وزن الحبة (جم)':'Weight per piece (g)'}</label>
+              <input type="number" min="0" step="any" value="${escAttr(w.pieceWeight)}" oninput="setWeightField(${si},${wi},'pieceWeight',this.value)">
+            </div>
+          ` : ''}
+          <div>
+            <label>${lang==='ar'?'حالة المكوّن (عربي)':'State (Arabic)'}</label>
+            <input type="text" placeholder="${lang==='ar'?'سائل / مطحون / …':'سائل / مطحون / …'}" value="${escAttr(w.stateAr)}" oninput="setWeightField(${si},${wi},'stateAr',this.value)">
+          </div>
+          <div>
+            <label>${lang==='ar'?'الحالة (إنجليزي)':'State (English)'}</label>
+            <input type="text" placeholder="liquid / ground / …" value="${escAttr(w.state)}" oninput="setWeightField(${si},${wi},'state',this.value)">
+          </div>
+          <div class="full-row">
+            <label>${lang==='ar'?'ملاحظات (عربي)':'Notes (Arabic)'}</label>
+            <input type="text" value="${escAttr(w.noteAr)}" oninput="setWeightField(${si},${wi},'noteAr',this.value)">
+          </div>
+          <div class="full-row">
+            <label>${lang==='ar'?'ملاحظات (إنجليزي)':'Notes (English)'}</label>
+            <input type="text" value="${escAttr(w.note)}" oninput="setWeightField(${si},${wi},'note',this.value)">
+          </div>
+          <div class="full-row" style="text-align:end">
+            <button class="btn-del" onclick="delWeightRow(${si},${wi})" style="display:inline-flex">×</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="step">
+        <div class="step-head">
+          <span class="step-n">${String(si+1).padStart(2,'0')}</span>
+          <span class="step-title">
+            <span class="ar-only">خطوة ${si+1}</span>
+            <span class="en-only">Step ${si+1}</span>
+          </span>
+          <button class="btn-del" onclick="moveStep(${si},-1)" title="up" ${si===0?'disabled style="opacity:.3"':''}>↑</button>
+          <button class="btn-del" onclick="moveStep(${si},1)" title="down" ${si===state.steps.length-1?'disabled style="opacity:.3"':''}>↓</button>
+          <button class="btn-del" onclick="delStep(${si})">×</button>
+        </div>
+        <div class="step-body">
+          <div class="field">
+            <label>${lang==='ar'?'عنوان الخطوة (عربي)':'Step heading (Arabic)'}</label>
+            <input type="text" placeholder="${lang==='ar'?'مثال: عملية التقطيع':'مثال: عملية التقطيع'}" value="${escAttr(s.headingAr)}" oninput="setStepField(${si},'headingAr',this.value)">
+          </div>
+          <div class="field">
+            <label>${lang==='ar'?'عنوان الخطوة (إنجليزي)':'Step heading (English)'}</label>
+            <input type="text" placeholder="e.g. Cutting Process" value="${escAttr(s.headingEn)}" oninput="setStepField(${si},'headingEn',this.value)">
+          </div>
+
+          <div class="field">
+            <label>${lang==='ar'?'العناصر':'Items'}</label>
+            ${itemsHtml}
+            <button class="btn dashed" onclick="addItem(${si})">
+              <span class="ar-only">+ عنصر</span><span class="en-only">+ item</span>
+            </button>
+          </div>
+
+          <div class="field">
+            <label>${lang==='ar'?'الصور':'Photos'}</label>
+            <div class="photos">${photosHtml}</div>
+            <label class="photos-add">
+              <span class="ar-only">📷 إضافة صور</span>
+              <span class="en-only">📷 Add photos</span>
+              <input type="file" accept="image/*" capture="environment" multiple onchange="onStepPhotosPick(event, ${si})">
+            </label>
+          </div>
+
+          <div class="w-toggle" onclick="toggleWeights(${si})">
+            <span>
+              <span class="ar-only">⚖ جدول المكونات</span>
+              <span class="en-only">⚖ Ingredient weights</span>
+            </span>
+            <span class="w-count">${s.showWeights ? '▼' : '▶'} ${s.weights.length}</span>
+          </div>
+          <div class="w-table ${s.showWeights ? 'open' : ''}">
+            ${weightsHtml}
+            ${s.showWeights ? `<button class="btn dashed full" onclick="addWeightRow(${si})">
+              <span class="ar-only">+ مكوّن</span><span class="en-only">+ ingredient</span>
+            </button>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// =========================================================================
+// Helpers
+// =========================================================================
+
+function escAttr(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(new Error('read failed'));
+    r.readAsDataURL(file);
+  });
+}
+
+function flash(msg, kind) {
+  const el = document.getElementById('flash');
+  el.textContent = msg;
+  el.className = 'flash show' + (kind ? ' ' + kind : '');
+  setTimeout(() => { el.className = 'flash'; }, 1800);
+}
+
+// =========================================================================
+// Export
+// =========================================================================
+
+function buildExportPayload() {
+  // Pull latest title values
+  state.titleAr = document.getElementById('titleAr').value;
+  state.titleEn = document.getElementById('titleEn').value;
+
+  // Validate
+  if (!state.titleAr.trim() || !state.titleEn.trim()) {
+    flash(getLang()==='ar' ? 'العنوان بالعربي والإنجليزي مطلوبان' : 'Both Arabic and English titles are required', 'error');
+    return null;
+  }
+  if (!state.steps.length && !state.utensils.length) {
+    flash(getLang()==='ar' ? 'أضف خطوة أو أداة على الأقل' : 'Add at least one step or utensil', 'error');
+    return null;
+  }
+
+  // Build the recipe object (matching desktop schema in data/recipes.json)
+  const recipeSteps = [];
+
+  if (state.utensils.length) {
+    const utensilStep = {
+      heading: 'Used Utensils',
+      headingAr: 'الأدوات المستخدمة',
+      items: state.utensils.map(u => u.en || u.ar || ''),
+      itemsAr: state.utensils.map(u => u.ar || u.en || ''),
+      images: [],
+      weights: [],
+    };
+    if (state.utensils.some(u => u.img)) {
+      utensilStep.utensilImages = state.utensils.map(u => u.img || '');
+    }
+    recipeSteps.push(utensilStep);
+  }
+
+  for (const s of state.steps) {
+    const items   = s.items.map(it => it.en || it.ar || '');
+    const itemsAr = s.items.map(it => it.ar || it.en || '');
+    const weights = s.weights.map(w => {
+      const e = { name: w.name || w.nameAr || '', amount: String(w.amount || ''), unit: w.unit || 'g', note: w.note || '' };
+      if (w.unit === 'pcs' && w.pieceWeight) {
+        const pw = parseFloat(w.pieceWeight);
+        if (isFinite(pw) && pw > 0) e.pieceWeight = pw;
+      }
+      if (w.state) e.state = w.state;
+      return e;
+    });
+    const weightsAr = s.weights.map(w => {
+      const e = {
+        name: w.name || w.nameAr || '',
+        amount: String(w.amount || ''),
+        unit: w.unit || 'g',
+        nameAr: w.nameAr || '',
+        note: w.note || '',
+        noteAr: w.noteAr || '',
+      };
+      if (w.unit === 'pcs' && w.pieceWeight) {
+        const pw = parseFloat(w.pieceWeight);
+        if (isFinite(pw) && pw > 0) e.pieceWeight = pw;
+      }
+      if (w.stateAr) e.stateAr = w.stateAr;
+      return e;
+    });
+    recipeSteps.push({
+      heading: s.headingEn || s.headingAr || 'Step',
+      headingAr: s.headingAr || s.headingEn || 'خطوة',
+      items, itemsAr,
+      images: s.images.slice(),
+      weights, weightsAr,
+    });
+  }
+
+  return {
+    version: 1,
+    type: 'namliah-recipe-export',
+    exportedAt: new Date().toISOString(),
+    recipe: {
+      titleEn: state.titleEn.trim(),
+      titleAr: state.titleAr.trim(),
+      steps: recipeSteps,
+    },
+  };
+}
+
+function slugify(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'recipe';
+}
+
+function exportRecipe() {
+  const payload = buildExportPayload();
+  if (!payload) return;
+  const json = JSON.stringify(payload, null, 2);
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const filename = `recipe-${slugify(payload.recipe.titleEn)}-${ts}.json`;
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+  flash(getLang()==='ar' ? 'تم التصدير ✓' : 'Exported ✓', 'success');
+}
+
+async function copyExportJson() {
+  const payload = buildExportPayload();
+  if (!payload) return;
+  const json = JSON.stringify(payload);
+  try {
+    await navigator.clipboard.writeText(json);
+    flash(getLang()==='ar' ? 'تم النسخ للحافظة ✓' : 'Copied to clipboard ✓', 'success');
+  } catch (e) {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = json;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); flash(getLang()==='ar' ? 'تم النسخ ✓' : 'Copied ✓', 'success'); }
+    catch (_) { flash(getLang()==='ar' ? 'فشل النسخ' : 'Copy failed', 'error'); }
+    document.body.removeChild(ta);
+  }
+}
+
+// =========================================================================
+// Boot
+// =========================================================================
+
+function renderAll() {
+  document.getElementById('titleAr').value = state.titleAr || '';
+  document.getElementById('titleEn').value = state.titleEn || '';
+  renderUtensils();
+  renderSteps();
+  updateActiveTitle();
+}
+
+(function boot() {
+  // Restore lang
+  let savedLang = 'ar';
+  try { savedLang = localStorage.getItem(LS_LANG) || 'ar'; } catch(_){}
+  setLang(savedLang);
+  // Load all drafts (or migrate legacy single-draft); ensure at least one exists
+  loadAllDrafts();
+  if (!allDrafts.drafts[allDrafts.activeId]){
+    const fresh = newDraft();
+    allDrafts.drafts[fresh.id] = fresh;
+    allDrafts.activeId = fresh.id;
+    state = fresh;
+    saveNow();
+  }
+  renderAll();
+  document.getElementById('save-hint').textContent = '';
+  // Save before unload, just in case
+  window.addEventListener('beforeunload', saveNow);
+})();
+</script>
+</body>
+</html>
